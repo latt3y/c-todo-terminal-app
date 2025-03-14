@@ -96,17 +96,21 @@ void update_task(void)
     printf("Please press 1 to update name or 2 to update the status: ");
     scanf(" %d", &option);
 
-  if (option == 1) {
-    goto update_title;
+  switch (option) {
+    case 1: {
+      goto update_title;
+    } break;
+
+    case 2: {
+      goto update_status;
+    } break;
+
+    default: {
+      printf("Invalid option\n");
+      goto insert_option;
+    };
   }
-  else if (option == 2) {
-    goto update_status;
-  }
-  else {
-    printf("Invalid option\n");
-    goto insert_option;
-  }
-  
+
   update_title:
     printf("Enter tasks new title: ");
     read_line(new_title);
@@ -116,7 +120,7 @@ void update_task(void)
 
   update_status:
     printf("Enter status of task (1 - done; 0 - undone): ");
-    scanf(" %d", &task->status);
+    scanf(" %d", (int *) &task->status);
     goto end;
 
   end: 
