@@ -18,3 +18,4 @@ void list_tasks(void);
 void update_task(void);
 void handle_op(char *op);
 void free_tasks_buffer(void);
+void clear_all(void);

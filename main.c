@@ -1,25 +1,24 @@
 #include "./headers/task.h"
 #include "./headers/common.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 unsigned char is_valid_op(char *op) {
   printf("todos: ");
   scanf(" %c", op);
 
-  if (
-      *op == 'i' ||
-      *op == 'u' ||
-      *op == 'd' ||
-      *op == 'l' ||
-      *op == 'q' ||
-      *op == 'h' ||
-      *op == 'c'
-    ) {
-    return TRUE;
+  switch (*op) 
+  {
+    case 'i': 
+    case 'u': 
+    case 'd': 
+    case 'l': 
+    case 'q': 
+    case 'h':
+    case 'c': {
+      return TRUE;
+    };
+    default: return FALSE;
   }
-
-  return FALSE;
 }
 
 void print_help() {
@@ -32,14 +31,13 @@ void intro(void) {
   printf("\n==============================\n\n");
 }
 
-int main(void)
+void TaskLoop(void)
 {
   char op = '\0';
-  intro();
-  init_tasks();
 
-  while (TRUE) {
-    if (!is_valid_op(&op))
+  while (TRUE) 
+  {
+    if (!is_valid_op(&op)) 
     {
       printf("the command you entered is invalid! \n\n");
       print_help();
@@ -52,6 +50,14 @@ int main(void)
     else
       handle_op(&op);
   }
+}
+
+int main(void)
+{
+  intro();
+  init_tasks();
+
+  TaskLoop();
 
   return(0);
 }

@@ -6,11 +6,9 @@
 #include "../headers/common.h"
 #include "../headers/db.h"
 
-#define PADDING_H 2
-#define PADDING_V 2
 #define TITLE_DISPLAY_SIZE 50
 
-unsigned int mem_amount;
+unsigned int mem_amount = 0;
 unsigned long current_index = 1;
 Task *tasks_buffer = NULL;
 
@@ -41,6 +39,7 @@ void init_tasks(void)
     exit(EXIT_FAILURE);
   }
 
+  // load index where it left off
   fread(&current_index, sizeof(int), 1, meta_file);
 }
 
@@ -48,14 +47,22 @@ void create_task(void)
 {
   Task *task = (Task *) malloc(sizeof(Task));
 
-  task->id = current_index++;
+  task->id = current_index;
+
+  current_index++;
 
   printf("Enter title (max: 50 char): ");
   read_line(task->title);
 
   task->status = 0;
 
+  // append new task to the end of the tasks_buffer
+  // can use push maybe here
   tasks_buffer[mem_amount++] = *task;
+
+  printf("Task title is %s\n", task->title);
+  printf("mem amount is %d\n", mem_amount);
+  printf("index is %lu\n", current_index);
 
   store_into_file(tasks_buffer, &mem_amount);
   save_index(&current_index);
@@ -177,28 +184,15 @@ void delete_task(void)
 void list_tasks(void)
 {
   for (int i = 0; i < mem_amount; i++) {
-    char formated_title[TITLE_DISPLAY_SIZE];
-    char *title_ref = tasks_buffer[i].title;
-    unsigned char k = 0;
-
-    while (k < (TITLE_DISPLAY_SIZE - 1)) {
-      if (title_ref[k] != '\0') {
-        formated_title[k] = title_ref[k];
-        k++;
-        continue;
-      }
-      formated_title[k++] = ' ';
-    }
-
-    formated_title[k] = '\0';
+    Task task = tasks_buffer[i];
 
     printf(
       "%d|%s%s%s| status: %s\n",
       i + 1,
       "  ",
-      formated_title,
+      task.title,
       "  ",
-      tasks_buffer[i].status ? "Done" : "Undone"
+      task.status ? "Done" : "Undone"
     );
   }
 }
@@ -207,8 +201,7 @@ void handle_op(char *op)
 {
   if (!tasks_buffer)
   {
-    printf("You must call init_tasks function first! \n");
-    exit(EXIT_FAILURE);
+    init_tasks();
   }
 
   switch (*op)
@@ -219,6 +212,15 @@ void handle_op(char *op)
     }
     case 'i': {
       create_task();
+      break;
+    }
+    case 'c': {
+      if (!mem_amount) 
+      {
+        return;
+      }
+
+      clear_all();
       break;
     }
     case 'd': {
@@ -253,8 +255,16 @@ void handle_op(char *op)
       break;
     };
   }
-  
-  // free(tasks_buffer);
+}
+
+// reset
+void clear_all() 
+{
+  clear_file();
+
+  mem_amount = 0;
+  current_index = 1;
+  free_tasks_buffer();
 }
 
 void free_tasks_buffer(void)

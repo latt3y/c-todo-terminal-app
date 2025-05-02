@@ -5,6 +5,12 @@
 #include "../headers/db.h"
 #include "../headers/common.h"
 
+void clear_file(void) 
+{
+  fclose(fopen(DB_NAME, "w"));
+  fclose(fopen(META_FILE_NAME, "w"));
+}
+
 void store_into_file(Task *tasks_buffer, unsigned int *mem_amount)
 {
   FILE *file;
