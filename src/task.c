@@ -233,7 +233,7 @@ void list_tasks(void)
     Task task = tasks_buffer[i];
 
     printf(
-      "%d|%s%s%s| status: %s\n",
+      "==========\n%d|%s%s%s| status: %s\n",
       i + 1,
       "  ",
       task.title,
