@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "../headers/task.h"
 #include "../headers/db.h"
@@ -41,7 +42,7 @@ void store_into_file(Task *tasks_buffer, unsigned int *mem_amount)
 }
 
 // TODO: rename this to "save_metadata"
-void save_index(unsigned long *index)
+void save_index(uint64_t *index)
 {
   FILE *file;
 
@@ -58,11 +59,6 @@ void save_index(unsigned long *index)
     printf("Could not save to file %s\n", META_FILE_NAME);
     exit(EXIT_FAILURE);
   }
-
-  /*if (fwrite(index, sizeof(int), 1, file) != 1) {*/
-  /*  printf("Could not save meta data for this file\n");*/
-  /*  exit(EXIT_FAILURE);*/
-  /*}*/
 
   fclose(file);
 }
