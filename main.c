@@ -4,9 +4,6 @@
 int main(void)
 {
   intro();
-  init_tasks();
-
   Task_Loop();
-
   return(0);
 }
