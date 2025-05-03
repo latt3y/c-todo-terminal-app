@@ -14,17 +14,18 @@ uint64_t current_index = 1;
 Task *tasks_buffer = NULL;
 
 void help_info(void) {
-  printf("Press \"h\" if you need help for\ninteracting with the app\n");
+  printf("> Press \"h\" if you need help for interacting with the app\n");
 }
 
 void intro(void) {
-  printf("\n========== TODOS ==========\n\n");
+  printf("\n================== Tasks ========================\n");
+  printf(" $$ Let's get some job done today Boss! $$ \n\n");
   help_info();
-  printf("\n==============================\n\n");
+  printf("\n=================================================\n\n");
 }
 
 uint8_t is_valid_op(char *op) {
-  printf("todos: ");
+  printf(">$tasks: ");
   scanf(" %c", op);
 
   switch (*op) 
@@ -50,7 +51,7 @@ void Task_Loop(void)
   {
     if (!is_valid_op(&op)) 
     {
-      printf("the command you entered is invalid! \n\n");
+      printf("invalid command! \n\n");
       help_info();
     }
     else if (op == 'q')
@@ -124,9 +125,8 @@ void update_task(void)
 
   char *title = (char *) malloc(MAX_TITLE_SIZE);
 
-  get_title:
-    printf("Please enter tasks title to update: ");
-    read_line(title, MAX_TITLE_SIZE);
+  printf("Task title to update: ");
+  read_line(title, MAX_TITLE_SIZE);
 
   Task *task = NULL;
   
@@ -141,8 +141,8 @@ void update_task(void)
 
   if (!task)
   {
-    printf("Could not find task !\n");
-    goto get_title;
+    printf("Could not find task! Try again. \n");
+    return;
   }
 
   char *new_title = (char *) malloc(MAX_TITLE_SIZE);
@@ -174,7 +174,7 @@ void update_task(void)
     goto end;
 
   update_status:
-    printf("Enter status of task (1 - done; 0 - undone): ");
+    printf("Enter status (1 - done; 0 - undone): ");
     scanf(" %d", (int *) &task->status);
 
   end: 
@@ -206,8 +206,8 @@ void delete_task(void)
 
   if (!task)
   {
-    printf("Could not find task !\n");
-    exit(EXIT_FAILURE);
+    printf("Could not find task! Try again. \n");
+    return;
   }
 
   Task *new_tasks = (Task *) malloc(--mem_amount * sizeof(Task));
