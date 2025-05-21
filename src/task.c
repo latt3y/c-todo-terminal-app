@@ -44,9 +44,9 @@ void Task_Loop(void)
 {
   char op = '\0';
 
-  while (TRUE) 
+  while (TRUE)
   {
-    if (!is_valid_op(&op)) 
+    if (!is_valid_op(&op))
     {
       printf("invalid command! \n\n");
       help_info();
@@ -80,6 +80,7 @@ void init_tasks(void)
     exit(EXIT_FAILURE);
   }
 
+  /* Try and convert this to static allocation */
   tasks_buffer = (Task *) malloc((mem_amount + 1) * sizeof(Task));
 
   if (!tasks_buffer) {
@@ -261,7 +262,7 @@ void handle_op(char *op)
   switch (*op)
   {
     case 'h': {
-      list_commands();  
+      list_commands();
       break;
     }
     case 'i': {
@@ -269,7 +270,7 @@ void handle_op(char *op)
       break;
     }
     case 'c': {
-      if (!mem_amount) 
+      if (!mem_amount)
       {
         return;
       }

@@ -11,24 +11,24 @@ void read_line(char *des, uint8_t len)
   // skip spaces and new line
   while (ch == ' ' || ch == '\n')
     ch = getchar();
-  
+
   uint8_t i = 0;
   uint8_t max = len - 1;
 
-  while (TRUE) 
+  while (TRUE)
   {
-    if (i++ == max) 
+    if (i++ == max)
       break;
 
     // add more characters that would terminate the program
-    if (ch == '\n' || ch == '\x03') 
+    if (ch == '\n' || ch == '\x03')
       break;
 
     *curr++ = ch;
 
     ch = getchar();
   }
-  
+
   *curr = '\0';
 }
 
