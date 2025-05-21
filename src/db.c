@@ -6,7 +6,7 @@
 #include "../headers/db.h"
 #include "../headers/common.h"
 
-void clear_file(void) 
+void clear_file(void)
 {
   fclose(fopen(DB_NAME, "w"));
   fclose(fopen(META_FILE_NAME, "w"));

@@ -70,7 +70,7 @@ void init_tasks(void)
   FILE *meta_file = fopen(META_FILE_NAME, "rb");
 
   if (!file || !meta_file) {
-    printf("Could not load db\n");
+    fprintf(stderr, "Could not load db, check if file doesn't exist!\n");
     exit(EXIT_FAILURE);
   }
 
@@ -312,7 +312,7 @@ void handle_op(char *op)
 }
 
 // reset
-void clear_all() 
+void clear_all()
 {
   clear_file();
 
