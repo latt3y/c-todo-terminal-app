@@ -19,7 +19,7 @@ void help_info(void) {
 
 void intro(void) {
   printf("\n================== Tasks ========================\n");
-  printf(" $$ Let's get some job done today Boss! $$ \n\n");
+  printf(" $$$ Let's get some job done today! $$$ \n\n");
   help_info();
   printf("\n=================================================\n\n");
 }
