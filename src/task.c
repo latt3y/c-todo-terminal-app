@@ -8,14 +8,11 @@
 #include "../headers/db.h"
 
 #define MAX_TITLE_SIZE 50
+#define help_info(str) (fprintf(stdout, "> Press \"h\" if you need help for interacting with the app\n"))
 
 uint32_t mem_amount = 0;
 uint64_t current_index = 1;
 Task *tasks_buffer = NULL;
-
-void help_info(void) {
-  printf("> Press \"h\" if you need help for interacting with the app\n");
-}
 
 void intro(void) {
   printf("\n================== Tasks ========================\n");
@@ -28,13 +25,13 @@ uint8_t is_valid_op(char *op) {
   printf(">$tasks: ");
   scanf(" %c", op);
 
-  switch (*op) 
+  switch (*op)
   {
-    case 'i': 
-    case 'u': 
-    case 'd': 
-    case 'l': 
-    case 'q': 
+    case 'i':
+    case 'u':
+    case 'd':
+    case 'l':
+    case 'q':
     case 'h':
     case 'c': {
       return TRUE;
@@ -77,7 +74,11 @@ void init_tasks(void)
     exit(EXIT_FAILURE);
   }
 
-  fread(&mem_amount, sizeof(int), 1, file);
+  if (fread(&mem_amount, sizeof(int), 1, file) != 1)
+  {
+    fprintf(stderr, "ERROR: could not read from mem file\n");
+    exit(EXIT_FAILURE);
+  }
 
   tasks_buffer = (Task *) malloc((mem_amount + 1) * sizeof(Task));
 
@@ -92,7 +93,14 @@ void init_tasks(void)
   }
 
   // load index where it left off
-  fread(&current_index, sizeof(int), 1, meta_file);
+  if (fread(&current_index, sizeof(int), 1, meta_file) != 1)
+  {
+    fprintf(stderr, "ERROR: could not read from index file\n");
+    exit(EXIT_FAILURE);
+  }
+
+  fclose(file);
+  fclose(meta_file);
 }
 
 void create_task(void)
