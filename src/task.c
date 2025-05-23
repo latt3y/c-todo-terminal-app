@@ -71,8 +71,8 @@ void init_tasks(void)
   FILE *file = fopen(DB_MAIN_FILE_NAME, "rb");
   FILE *meta_file = fopen(DB_META_FILE_NAME, "rb");
 
-  assert(file == NULL);
-  assert(meta_file == NULL);
+  assert(file != NULL);
+  assert(meta_file != NULL);
 
   if (!file || !meta_file) {
     fprintf(stderr, "Could not load db, check if file doesn't exist!\n");
@@ -263,6 +263,8 @@ void handle_op(char op)
   {
     init_tasks();
   }
+
+  assert(tasks_buffer == NULL);
 
   switch (op)
   {

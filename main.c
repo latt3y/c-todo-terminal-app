@@ -4,6 +4,8 @@
 int main(void)
 {
   intro();
+
   Task_Loop();
-  return(0);
+
+  return 0;
 }

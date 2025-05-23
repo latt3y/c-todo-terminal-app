@@ -20,13 +20,13 @@ void store_into_file(Task *tasks_buffer, unsigned int *mem_amount)
 
   if (file == NULL) 
   {
-    printf("Could not open file %s\n", DB_MAIN_FILE_NAME);
+    printf("Could not open main file %s\n", DB_MAIN_FILE_NAME);
     exit(EXIT_FAILURE);
   }
 
   if (fwrite(mem_amount, sizeof(int), 1, file) != 1)
   {
-    printf("Could not save to file %s\n", DB_MAIN_FILE_NAME);
+    printf("Could not save to main file %s\n", DB_MAIN_FILE_NAME);
     exit(EXIT_FAILURE);
   }
 

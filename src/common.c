@@ -36,7 +36,7 @@ void str_cpy(char *des, const char *str, uint8_t size)
 {
   int counter = 0;
 
-  while (counter++ < size && *str)
+  while ((counter++ < size) && *str)
   {
     *des++ = *str++;
   }
