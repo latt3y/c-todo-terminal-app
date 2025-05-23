@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -8,6 +9,7 @@
 #include "../headers/db.h"
 
 #define MAX_TITLE_SIZE 50
+#define BUFFER 1024 // 1 kb
 #define help_info(str) (fprintf(stdout, "> Press \"h\" if you need help for interacting with the app\n"))
 
 uint32_t mem_amount = 0;
@@ -57,7 +59,7 @@ void Task_Loop(void)
       break;
     }
     else
-      handle_op(&op);
+      handle_op(op);
   }
 }
 
@@ -66,8 +68,11 @@ void init_tasks(void)
   if (tasks_buffer)
     return;
 
-  FILE *file = fopen(DB_NAME, "rb");
-  FILE *meta_file = fopen(META_FILE_NAME, "rb");
+  FILE *file = fopen(DB_MAIN_FILE_NAME, "rb");
+  FILE *meta_file = fopen(DB_META_FILE_NAME, "rb");
+
+  assert(file == NULL);
+  assert(meta_file == NULL);
 
   if (!file || !meta_file) {
     fprintf(stderr, "Could not load db, check if file doesn't exist!\n");
@@ -252,14 +257,14 @@ void list_tasks(void)
   }
 }
 
-void handle_op(char *op)
+void handle_op(char op)
 {
   if (!tasks_buffer)
   {
     init_tasks();
   }
 
-  switch (*op)
+  switch (op)
   {
     case 'h': {
       list_commands();

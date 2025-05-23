@@ -8,31 +8,31 @@
 
 void clear_file(void)
 {
-  fclose(fopen(DB_NAME, "w"));
-  fclose(fopen(META_FILE_NAME, "w"));
+  fclose(fopen(DB_MAIN_FILE_NAME, "w"));
+  fclose(fopen(DB_META_FILE_NAME, "w"));
 }
 
 void store_into_file(Task *tasks_buffer, unsigned int *mem_amount)
 {
   FILE *file;
 
-  file = fopen(DB_NAME, "wb");
+  file = fopen(DB_MAIN_FILE_NAME, "wb");
 
   if (file == NULL) 
   {
-    printf("Could not open file %s\n", DB_NAME);
+    printf("Could not open file %s\n", DB_MAIN_FILE_NAME);
     exit(EXIT_FAILURE);
   }
 
   if (fwrite(mem_amount, sizeof(int), 1, file) != 1)
   {
-    printf("Could not save to file %s\n", DB_NAME);
+    printf("Could not save to file %s\n", DB_MAIN_FILE_NAME);
     exit(EXIT_FAILURE);
   }
 
   if (fwrite(tasks_buffer, sizeof(Task), *mem_amount, file) != *mem_amount) 
   {
-    printf("Could not save to file %s\n", DB_NAME);
+    printf("Could not save to file %s\n", DB_MAIN_FILE_NAME);
     exit(EXIT_FAILURE);
   }
 
@@ -46,17 +46,17 @@ void save_index(uint64_t *index)
 {
   FILE *file;
 
-  file = fopen(META_FILE_NAME, "wb");
+  file = fopen(DB_META_FILE_NAME, "wb");
 
   if (file == NULL)
   {
-    printf("Could not open file %s\n", META_FILE_NAME);
+    printf("Could not open file %s\n", DB_META_FILE_NAME);
     exit(EXIT_FAILURE);
   }
 
   if (fwrite(index, sizeof(long), 1, file) != 1) 
   {
-    printf("Could not save to file %s\n", META_FILE_NAME);
+    printf("Could not save to file %s\n", DB_META_FILE_NAME);
     exit(EXIT_FAILURE);
   }
 
