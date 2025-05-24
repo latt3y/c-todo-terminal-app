@@ -79,7 +79,7 @@ void init_tasks(void)
     exit(EXIT_FAILURE);
   }
 
-  if (fread(&mem_amount, sizeof(int), 1, file) != 1)
+  if (fread(&mem_amount, sizeof(int), 1, file) == 0 && mem_amount != 0)
   {
     fprintf(stderr, "ERROR: could not read from mem file\n");
     exit(EXIT_FAILURE);
@@ -99,7 +99,7 @@ void init_tasks(void)
   }
 
   // load index where it left off
-  if (fread(&current_index, sizeof(int), 1, meta_file) != 1)
+  if (fread(&current_index, sizeof(int), 1, meta_file) == 0 && current_index != 1)
   {
     fprintf(stderr, "ERROR: could not read from index file\n");
     exit(EXIT_FAILURE);
