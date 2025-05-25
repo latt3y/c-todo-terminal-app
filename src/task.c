@@ -264,8 +264,6 @@ void handle_op(char op)
     init_tasks();
   }
 
-  assert(tasks_buffer == NULL);
-
   switch (op)
   {
     case 'h': {
