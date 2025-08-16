@@ -71,6 +71,9 @@ void init_tasks(void)
   FILE *file = fopen(DB_MAIN_FILE_NAME, "rb");
   FILE *meta_file = fopen(DB_META_FILE_NAME, "rb");
 
+  printf("name of file DB_MAIN %s\n", DB_MAIN_FILE_NAME);
+  printf("name of file DB_META %s\n", DB_META_FILE_NAME);
+
   assert(file != NULL);
   assert(meta_file != NULL);
 

@@ -1,6 +1,26 @@
 #include "../headers/common.h"
+
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
+#define PATH_BUFF 1024
+
+char* pwd(void) {
+  char* buff = (char *) malloc(PATH_BUFF);
+
+  if (!buff) {
+    fprintf(stderr, "could not allocate mem for pwd\n");
+    exit(EXIT_FAILURE);
+  }
+
+  if (!getcwd(buff, PATH_BUFF)) {
+    fprintf(stderr, "could not get path to dir\n");
+    exit(EXIT_FAILURE);
+  }
+
+  return buff;
+}
 
 void read_line(char *des, uint8_t len)
 {
