@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "../headers/task.h"
 #include "../headers/common.h"
+#include "../headers/task.h"
 #include "../headers/db.h"
 
 #define MAX_TITLE_SIZE 50
@@ -63,16 +63,16 @@ void Task_Loop(void)
   }
 }
 
+extern char abs_path[ABS_PATH_SIZE],
+            db_main_path[PATHSIZE],
+            db_meta_path[PATHSIZE];
+
 void init_tasks(void)
 {
-  if (tasks_buffer)
-    return;
+  if (tasks_buffer) return;
 
-  FILE *file = fopen(DB_MAIN_FILE_NAME, "rb");
-  FILE *meta_file = fopen(DB_META_FILE_NAME, "rb");
-
-  printf("name of file DB_MAIN %s\n", DB_MAIN_FILE_NAME);
-  printf("name of file DB_META %s\n", DB_META_FILE_NAME);
+  FILE *file = fopen(db_main_path, "a+b");
+  FILE *meta_file = fopen(db_meta_path, "a+b");
 
   assert(file != NULL);
   assert(meta_file != NULL);
@@ -130,7 +130,7 @@ void create_task(void)
   tasks_buffer[mem_amount++] = *task;
 
   store_into_file(tasks_buffer, &mem_amount);
-  save_index(&current_index);
+  save_index(current_index);
 
   free(task);
   task = NULL;

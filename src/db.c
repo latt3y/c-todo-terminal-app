@@ -12,15 +12,19 @@ void clear_file(void)
   fclose(fopen(DB_META_FILE_NAME, "w"));
 }
 
+extern char abs_path[ABS_PATH_SIZE],
+            db_main_path[PATHSIZE],
+            db_meta_path[PATHSIZE];
+
 void store_into_file(Task *tasks_buffer, unsigned int *mem_amount)
 {
   FILE *file;
 
-  file = fopen(DB_MAIN_FILE_NAME, "wb");
+  file = fopen(db_main_path, "wb");
 
-  if (file == NULL) 
+  if (file == NULL)
   {
-    printf("Could not open main file %s\n", DB_MAIN_FILE_NAME);
+    printf("Could not open main file \"%s\"\n", db_main_path);
     exit(EXIT_FAILURE);
   }
 
@@ -32,7 +36,7 @@ void store_into_file(Task *tasks_buffer, unsigned int *mem_amount)
 
   if (fwrite(tasks_buffer, sizeof(Task), *mem_amount, file) != *mem_amount) 
   {
-    printf("Could not save to file %s\n", DB_MAIN_FILE_NAME);
+    printf("Could not save to file \"%s\"\n", db_main_path);
     exit(EXIT_FAILURE);
   }
 
@@ -41,22 +45,21 @@ void store_into_file(Task *tasks_buffer, unsigned int *mem_amount)
   fclose(file);
 }
 
-// TODO: rename this to "save_metadata"
-void save_index(uint64_t *index)
+void save_index(uint64_t index)
 {
   FILE *file;
 
-  file = fopen(DB_META_FILE_NAME, "wb");
+  file = fopen(db_meta_path, "wb");
 
   if (file == NULL)
   {
-    printf("Could not open file %s\n", DB_META_FILE_NAME);
+    printf("Could not open file \"%s\"\n", db_meta_path);
     exit(EXIT_FAILURE);
   }
 
-  if (fwrite(index, sizeof(long), 1, file) != 1) 
+  if (fwrite(&index, sizeof(long), 1, file) != 1) 
   {
-    printf("Could not save to file %s\n", DB_META_FILE_NAME);
+    printf("Could not save to file \"%s\"\n", db_meta_path);
     exit(EXIT_FAILURE);
   }
 

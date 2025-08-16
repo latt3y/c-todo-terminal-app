@@ -4,22 +4,52 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
-#define PATH_BUFF 1024
 
-char* pwd(void) {
-  char* buff = (char *) malloc(PATH_BUFF);
-
-  if (!buff) {
-    fprintf(stderr, "could not allocate mem for pwd\n");
-    exit(EXIT_FAILURE);
-  }
-
-  if (!getcwd(buff, PATH_BUFF)) {
+void pwd(char *buff, size_t size)
+{
+  if (!getcwd(buff, size)) {
     fprintf(stderr, "could not get path to dir\n");
     exit(EXIT_FAILURE);
   }
+}
 
-  return buff;
+uint32_t str_len(const char *s)
+{
+  const char *sr = s;
+
+  while (*sr++);
+
+  return sr - s;
+}
+
+void str_join(char* dest, uint64_t destlen, char *join_with, const char* s1, const char* s2)
+{
+  uint32_t s1len = str_len(s1);
+  uint32_t s2len = str_len(s2);
+
+  if ((s1len + s2len) > destlen)
+  {
+    fprintf(stderr, "destination length is smaller than the strings you are trying to join\n");
+    return;
+  }
+
+  char* destp = dest;
+  const char* sp = s1;
+
+  while (*sp)
+    *destp++ = *sp++;
+
+  if (join_with) {
+    while (*join_with)
+      *destp++ = *join_with++;
+  }
+
+  sp = s2;
+
+  while (*sp)
+    *destp++ = *sp++;
+
+  *destp = '\0';
 }
 
 void read_line(char *des, uint8_t len)
