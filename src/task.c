@@ -92,9 +92,6 @@ void init_tasks(void)
     exit(EXIT_FAILURE);
   }
 
-  printf("Mem amount is %d\n", mem_amount);
-
-  /* Try and allocate this at compile time */
   tasks_buffer = (Task *) malloc((mem_amount + 1) * sizeof(Task));
 
   if (!tasks_buffer) {
@@ -130,8 +127,6 @@ void create_task(void)
 
   task->status = UNDONE;
 
-  // append new task to the end of the tasks_buffer
-  // NOTE: can use "push" method here
   tasks_buffer[mem_amount++] = *task;
 
   db_store_data(tasks_buffer, &mem_amount);
@@ -151,7 +146,7 @@ void update_task(void)
   read_line(title, MAX_TITLE_SIZE);
 
   Task *task = NULL;
-  
+
   for (uint32_t i = 0; i < mem_amount; i++) 
   {
     if (strcmp(title, tasks_buffer[i].title) == 0) 
@@ -240,7 +235,7 @@ void delete_task(void)
   {
     if (tasks_buffer[i].id != task->id)
       new_tasks[i] = tasks_buffer[i];
-    
+
     i++;
   }
 

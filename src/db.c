@@ -6,15 +6,15 @@
 #include "../headers/db.h"
 #include "../headers/common.h"
 
+extern char abs_path[ABS_PATH_SIZE],
+       db_main_path[PATHSIZE],
+       db_meta_path[PATHSIZE];
+
 void db_clear_data(void)
 {
-  fclose(fopen(DB_MAIN_FILE_NAME, "w"));
-  fclose(fopen(DB_META_FILE_NAME, "w"));
+  fclose(fopen(db_main_path, "w"));
+  fclose(fopen(db_meta_path, "w"));
 }
-
-extern char abs_path[ABS_PATH_SIZE],
-            db_main_path[PATHSIZE],
-            db_meta_path[PATHSIZE];
 
 void db_store_data(Task *tasks_buffer, unsigned int *mem_amount)
 {
@@ -40,7 +40,7 @@ void db_store_data(Task *tasks_buffer, unsigned int *mem_amount)
     exit(EXIT_FAILURE);
   }
 
-  printf("Task saved successfuly\n");
+  printf("Tasks saved successfuly\n");
 
   fclose(file);
 }
