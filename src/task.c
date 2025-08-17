@@ -9,8 +9,7 @@
 #include "../headers/db.h"
 
 #define MAX_TITLE_SIZE 50
-#define BUFFER 1024 // 1 kb
-#define help_info(str) (fprintf(stdout, "> Press \"h\" if you need help for interacting with the app\n"))
+#define help_info() (fprintf(stdout, "> Press \"h\" if you need help for interacting with the app\n"))
 
 uint32_t mem_amount = 0;
 uint64_t current_index = 1;
@@ -78,7 +77,7 @@ void init_tasks(void)
   assert(meta_file != NULL);
 
   if (!file || !meta_file) {
-    fprintf(stderr, "Could not load db, check if file doesn't exist!\n");
+    fprintf(stderr, "Could not load tasks, failed to open!\n");
     exit(EXIT_FAILURE);
   }
 
@@ -88,7 +87,7 @@ void init_tasks(void)
     exit(EXIT_FAILURE);
   }
 
-  /* Try and convert this to static allocation */
+  /* Try and allocate this at compile time */
   tasks_buffer = (Task *) malloc((mem_amount + 1) * sizeof(Task));
 
   if (!tasks_buffer) {
@@ -101,7 +100,6 @@ void init_tasks(void)
     exit(EXIT_FAILURE);
   }
 
-  // load index where it left off
   if (fread(&current_index, sizeof(int), 1, meta_file) == 0 && current_index != 1)
   {
     fprintf(stderr, "ERROR: could not read from index file\n");
@@ -123,14 +121,14 @@ void create_task(void)
   printf("Enter title (max: %d char): ", MAX_TITLE_SIZE);
   read_line(task->title, MAX_TITLE_SIZE);
 
-  task->status = 0;
+  task->status = UNDONE;
 
   // append new task to the end of the tasks_buffer
-  // can use push maybe here
+  // NOTE: can use "push" method here
   tasks_buffer[mem_amount++] = *task;
 
-  store_into_file(tasks_buffer, &mem_amount);
-  save_index(current_index);
+  db_store_data(tasks_buffer, &mem_amount);
+  db_save_index(current_index);
 
   free(task);
   task = NULL;
@@ -195,7 +193,7 @@ void update_task(void)
     scanf(" %d", (int *) &task->status);
 
   end: 
-    store_into_file(tasks_buffer, &mem_amount);
+    db_store_data(tasks_buffer, &mem_amount);
     free(title);
     free(new_title);
 }
@@ -239,7 +237,7 @@ void delete_task(void)
     i++;
   }
 
-  store_into_file(new_tasks, &mem_amount);
+  db_store_data(new_tasks, &mem_amount);
   free(new_tasks);
   free(title);
 }
@@ -323,7 +321,7 @@ void handle_op(char op)
 // reset
 void clear_all()
 {
-  clear_file();
+  db_clear_data();
 
   mem_amount = 0;
   current_index = 1;

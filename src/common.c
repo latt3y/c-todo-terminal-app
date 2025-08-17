@@ -8,7 +8,7 @@
 void pwd(char *buff, size_t size)
 {
   if (!getcwd(buff, size)) {
-    fprintf(stderr, "could not get path to dir\n");
+    fprintf(stderr, "could not get path to current dir\n");
     exit(EXIT_FAILURE);
   }
 }
@@ -22,10 +22,12 @@ uint32_t str_len(const char *s)
   return sr - s;
 }
 
-void str_join(char* dest, uint64_t destlen, char *join_with, const char* s1, const char* s2)
+void str_join(const char *s1, const char *s2, char *with_str, char *const dest, uint64_t destlen)
 {
   uint32_t s1len = str_len(s1);
   uint32_t s2len = str_len(s2);
+
+  if (s1len == 0 && s2len == 0) return;
 
   if ((s1len + s2len) > destlen)
   {
@@ -39,9 +41,9 @@ void str_join(char* dest, uint64_t destlen, char *join_with, const char* s1, con
   while (*sp)
     *destp++ = *sp++;
 
-  if (join_with) {
-    while (*join_with)
-      *destp++ = *join_with++;
+  if (with_str) {
+    while (*with_str)
+      *destp++ = *with_str++;
   }
 
   sp = s2;
@@ -91,7 +93,7 @@ void str_cpy(char *des, const char *str, uint8_t size)
     *des++ = *str++;
   }
 
-  *des = 0;
+  *des = '\0';
 }
 
 void list_commands(void) {

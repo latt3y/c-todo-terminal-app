@@ -10,8 +10,8 @@ int main(void)
 {
   pwd(abs_path, ABS_PATH_SIZE);
 
-  str_join(db_main_path, PATHSIZE, NULL, abs_path, DB_MAIN_FILE_NAME);
-  str_join(db_meta_path, PATHSIZE, NULL, abs_path, DB_META_FILE_NAME);
+  str_join(abs_path, DB_MAIN_FILE_NAME, NULL, db_main_path, PATHSIZE);
+  str_join(abs_path, DB_META_FILE_NAME, NULL, db_meta_path, PATHSIZE);
 
   intro();
   Task_Loop();

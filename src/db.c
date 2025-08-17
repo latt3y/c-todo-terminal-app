@@ -6,7 +6,7 @@
 #include "../headers/db.h"
 #include "../headers/common.h"
 
-void clear_file(void)
+void db_clear_data(void)
 {
   fclose(fopen(DB_MAIN_FILE_NAME, "w"));
   fclose(fopen(DB_META_FILE_NAME, "w"));
@@ -16,7 +16,7 @@ extern char abs_path[ABS_PATH_SIZE],
             db_main_path[PATHSIZE],
             db_meta_path[PATHSIZE];
 
-void store_into_file(Task *tasks_buffer, unsigned int *mem_amount)
+void db_store_data(Task *tasks_buffer, unsigned int *mem_amount)
 {
   FILE *file;
 
@@ -40,12 +40,12 @@ void store_into_file(Task *tasks_buffer, unsigned int *mem_amount)
     exit(EXIT_FAILURE);
   }
 
-  printf("TODO saved successfuly\n");
+  printf("Task saved successfuly\n");
 
   fclose(file);
 }
 
-void save_index(uint64_t index)
+void db_save_index(uint64_t index)
 {
   FILE *file;
 
