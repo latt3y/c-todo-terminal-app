@@ -70,8 +70,13 @@ void init_tasks(void)
 {
   if (tasks_buffer) return;
 
-  FILE *file = fopen(db_main_path, "a+b");
-  FILE *meta_file = fopen(db_meta_path, "a+b");
+  FILE *file, *meta_file;
+
+  if ((file = fopen(db_main_path, "rb")) == NULL)
+    file = fopen(db_main_path, "a+b");
+
+  if ((meta_file = fopen(db_meta_path, "rb")) == NULL)
+    meta_file = fopen(db_meta_path, "a+b");
 
   assert(file != NULL);
   assert(meta_file != NULL);
@@ -86,6 +91,8 @@ void init_tasks(void)
     fprintf(stderr, "ERROR: could not read from mem file\n");
     exit(EXIT_FAILURE);
   }
+
+  printf("Mem amount is %d\n", mem_amount);
 
   /* Try and allocate this at compile time */
   tasks_buffer = (Task *) malloc((mem_amount + 1) * sizeof(Task));
