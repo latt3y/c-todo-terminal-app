@@ -1,3 +1,6 @@
+#ifndef TASK_H
+#define TASK_H
+
 typedef enum _status {
   UNDONE,
   DONE,
@@ -30,3 +33,5 @@ void clear_all(void);
 void Task_Loop(void);
 
 void intro(void);
+
+#endif
