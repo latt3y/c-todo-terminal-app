@@ -2,66 +2,136 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "../headers/task.h"
 #include "../headers/db.h"
+#include "../headers/task.h"
 #include "../headers/common.h"
 
+#define local static
+#define bool uint8_t
+
 extern char abs_path[ABS_PATH_SIZE],
-       db_main_path[PATHSIZE],
-       db_meta_path[PATHSIZE];
+         db_main_path[PATHSIZE],
+         db_meta_path[PATHSIZE];
+
+local DB database;
+local FILE* data_file;
+local FILE* meta_file;
+local bool db_is_initialized = FALSE;
+
+FILE* m_fopen(const char* filename, const char* mode)
+{
+  FILE* file = fopen(filename, mode);
+
+  if (!file)
+  {
+    fprintf(stderr, "Could not open file %s\n", filename);
+    exit(1);
+  }
+
+  return file;
+}
+
+void m_fread(
+    void* buffer,
+    size_t size,
+    size_t memb,
+    FILE *restrict file,
+    const char *const filename
+)
+{
+  int ret = fread(buffer, size, memb, file);
+  if (ret != memb)
+  {
+    fprintf(stderr, "Could not read from file %s\n Expected %lu but received %d\n", filename, memb, ret);
+    exit(1);
+  }
+}
+
+void m_fwrite(
+    void* buff,
+    size_t size,
+    size_t memb,
+    FILE *restrict file,
+    const char *const filename
+)
+{
+  int ret = fwrite(buff, size, memb, file);
+  if (ret != memb)
+  {
+    fprintf(stderr, "Could not write to file %s\n Expected mem output %lu but got %d\n", filename, memb, ret);
+    exit(1);
+  }
+}
+
+void db_init()
+{
+  if (db_is_initialized) return;
+
+  database.tasks = NULL;
+  database.size = 0;
+  database.curr_index = 1;
+
+  data_file = m_fopen(db_main_path, "a+b");
+  meta_file = m_fopen(db_meta_path, "a+b");
+
+  m_fread(&database.size, sizeof(uint64_t), 1, data_file, DB_MAIN_FILE_NAME);
+  m_fread(&database.curr_index, sizeof(uint64_t), 1, meta_file, DB_META_FILE_NAME);
+  m_fread(&database.tasks, sizeof(Task), database.size, data_file, DB_MAIN_FILE_NAME);
+
+  db_is_initialized = TRUE;
+}
 
 void db_clear_data(void)
 {
-  fclose(fopen(db_main_path, "w"));
-  fclose(fopen(db_meta_path, "w"));
+  if (!db_is_initialized) return;
+
+  fclose(m_fopen(db_main_path, "w"));
+  fclose(m_fopen(db_meta_path, "w"));
 }
 
-void db_store_data(Task *tasks_buffer, unsigned int *mem_amount)
+void db_kill(void)
 {
-  FILE *file;
-
-  file = fopen(db_main_path, "wb");
-
-  if (file == NULL)
-  {
-    printf("Could not open main file \"%s\"\n", db_main_path);
-    exit(EXIT_FAILURE);
+  if (data_file) {
+    fclose(data_file);
+    data_file = NULL;
   }
 
-  if (fwrite(mem_amount, sizeof(int), 1, file) != 1)
-  {
-    printf("Could not save to main file %s\n", DB_MAIN_FILE_NAME);
-    exit(EXIT_FAILURE);
+  if (meta_file) {
+    fclose(meta_file);
+    meta_file = NULL;
   }
-
-  if (fwrite(tasks_buffer, sizeof(Task), *mem_amount, file) != *mem_amount) 
-  {
-    printf("Could not save to file \"%s\"\n", db_main_path);
-    exit(EXIT_FAILURE);
-  }
-
-  printf("Tasks saved successfuly\n");
-
-  fclose(file);
 }
 
-void db_save_index(uint64_t index)
+void db_store_data_()
 {
-  FILE *file;
-
-  file = fopen(db_meta_path, "wb");
-
-  if (file == NULL)
+  if (!data_file)
   {
-    printf("Could not open file \"%s\"\n", db_meta_path);
-    exit(EXIT_FAILURE);
+    fprintf(stderr, "Could not save because \"data file\" is not opened");
+    return;
   }
 
-  if (fwrite(&index, sizeof(long), 1, file) != 1) 
+  m_fwrite(
+    database.tasks,
+    sizeof(Task),
+    database.size,
+    data_file,
+    DB_MAIN_FILE_NAME
+  );
+}
+
+void db_save_index_()
+{
+  if (!meta_file)
   {
-    printf("Could not save to file \"%s\"\n", db_meta_path);
-    exit(EXIT_FAILURE);
+    fprintf(stderr, "Could not save because \"meta file\" is not opened");
+    return;
   }
 
-  fclose(file);
+  m_fwrite(
+    &database.curr_index,
+    sizeof(uint64_t),
+    1,
+    meta_file,
+    DB_META_FILE_NAME
+  );
 }
